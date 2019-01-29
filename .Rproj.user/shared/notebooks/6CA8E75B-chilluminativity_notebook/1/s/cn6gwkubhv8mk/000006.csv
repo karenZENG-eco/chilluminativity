@@ -1,0 +1,2 @@
+"0","ggplot(data = sentiment_of_script_by_line, aes(x = line_number, y = cum_vibes, group = 1)) +"
+"0","  geom_line()"

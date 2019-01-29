@@ -1,0 +1,83 @@
+---
+title: "chilluminativity_notebook"
+output: html_notebook
+---
+
+I'll be loosely following the tutorial linked below.
+(https://www.tidytextmining.com/tidytext.html#tidyausten)
+Hopefully this helps me learn, because it sure ain't gonna be useful elsewhere...
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(stringr)
+library(tidytext)
+```
+
+Before analysis, we have to change the format into tidy text to follow the tutorial.
+
+Load in raw data sourced from Barry's tweeter (https://docs.google.com/document/d/13R9hPoEFmLJI8H9kPYt291hjHokIBFQ5ci9uaOmO4dY/edit)
+And then change the format. Extra info based on the original text like the row number can also be included in this step.
+```{r}
+script <- read_lines("./raw/Chilluminativity - Script Public.txt") #load in plaintext
+script <- data_frame(script) #change it to table format
+script <- script %>% mutate(line_number = row_number()) #add row number
+script <- unnest_tokens(script, word, script) #change to tidy format
+```
+
+We can count all the words easily and visualize it in a graph.
+```{r}
+count(script, word, sort = TRUE) #count the words
+
+script %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 42) %>%
+  mutate(word = reorder(word, n)) %>% #reorder so the most frequent words are at the top
+  ggplot(aes(word, n)) + #graph the counted words
+  geom_col() +
+  xlab(NULL) +
+  coord_flip()
+```
+
+Let's try some sentiment analysis. The bing dataset will tell you if a word has positive or negative vibes according to SCIENCE!
+
+(citation for bing dataset is:
+Minqing Hu and Bing Liu. "Mining and Summarizing Customer Reviews." Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD-2004), Aug 22-25, 2004, Seattle, Washington, USA. See: http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon).
+
+```{r}
+bing <- get_sentiments("bing") #use the bing dataset
+
+sentiment_of_script <- script %>%
+  inner_join(bing) #join the bing data to the script
+
+sentiment_of_script <- sentiment_of_script %>%
+  mutate(vibes = recode(sentiment, 
+                        "positive" = "1", #make sentiment a numeric value
+                        "negative" = "-1")) #where 1 = positive, -1 = negative
+
+sentiment_of_script$vibes <- as.numeric(sentiment_of_script$vibes) #convert from chr to dbl
+
+sentiment_of_script_by_line <- sentiment_of_script %>%
+  group_by(line_number) %>%
+  summarize(vibes = mean(as.numeric(vibes))) #make a line by line summary of the vibes
+
+sentiment_of_script_by_line$cum_vibes <- cumsum(sentiment_of_script_by_line$vibes)#cumulative vibes by line
+```
+
+We can now graph the vibes throughout each line of the script
+
+```{r}
+ggplot(data = sentiment_of_script_by_line, aes(x = line_number, y = cum_vibes, group = 1)) +
+  geom_line()
+```
+
+That's nice, it looks like a very positive play, with a minor dip in mood at around line 300.
+
+Let's make more pretty graphics!
+
+But first, save the graph we just made.
+```{r}
+ggsave("./output/vibes_by_line.jpg")
+```
+

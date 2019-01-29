@@ -1,0 +1,4 @@
+"0","sentiment_of_script_by_line$cum_line <- cumsum(vibes)#cumulative vibes by line
+"
+"2","Error: object 'vibes' not found
+"

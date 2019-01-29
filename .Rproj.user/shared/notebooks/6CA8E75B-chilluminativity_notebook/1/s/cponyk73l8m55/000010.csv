@@ -1,0 +1,4 @@
+"0","script <- read_lines(""./raw/Chilluminativity - Script Public.txt"") #load in plaintext"
+"0","script <- data_frame(script) #change it to table format"
+"0","script <- script %>% mutate(line_number = row_number()) #add row number"
+"0","script <- unnest_tokens(script, word, script) #change to tidy format"
