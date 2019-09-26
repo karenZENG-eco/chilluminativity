@@ -1,4 +1,4 @@
-A text mining attempt of the 2018 Chilluminati Jingle Jam Christmas Nativity play.
+A text mining attempt on the 2018 Chilluminati Jingle Jam Christmas Nativity play.
 I really don't know what i'm doing besides procrastination.
 
 If you wanna run the stuff yourself, R is free and open source and allll that so go for it!
