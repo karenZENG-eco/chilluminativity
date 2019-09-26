@@ -42,6 +42,7 @@ script %>%
   ggplot(aes(word, n)) + #graph the counted words
   geom_col() +
   xlab(NULL) +
+  ggtitle("Most common words") +
   coord_flip()
 ```
 
@@ -89,7 +90,7 @@ ggplot(data = sentiment_of_script_by_line, aes(x = line_number, y = cum_vibes, g
   geom_line() + #show data as line
   ggtitle("Sentiment of the Chilluminati Nativety Play") + #add title
   xlab("Line Number") + #title of x axis
-  ylab("Cumulative Mood (positive words = higher number)") #title of y axis
+  ylab("Good Vibes (positive words = higher number)") #title of y axis
 
 ```
 
