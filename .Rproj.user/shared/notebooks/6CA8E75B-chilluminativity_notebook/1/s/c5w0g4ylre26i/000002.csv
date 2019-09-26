@@ -1,4 +1,14 @@
-"0","sentiment_of_script_by_line$cum_line <- cumsum(vibes)#cumulative vibes by line
+"0","bing <- get_sentiments(""bing"") #use the bing dataset"
+"0","sentiment_of_script <- script %>%"
+"0","  inner_join(bing) #join the bing data to the script"
+"2","Joining, by = ""word""
 "
-"2","Error: object 'vibes' not found
-"
+"0","sentiment_of_script <- sentiment_of_script %>%"
+"0","  mutate(vibes = recode(sentiment, "
+"0","                        ""positive"" = ""1"", #make sentiment a numeric value"
+"0","                        ""negative"" = ""-1"")) #where 1 = positive, -1 = negative"
+"0","sentiment_of_script$vibes <- as.numeric(sentiment_of_script$vibes) #convert from chr to dbl"
+"0","sentiment_of_script_by_line <- sentiment_of_script %>%"
+"0","  group_by(line_number) %>%"
+"0","  summarize(vibes = mean(as.numeric(vibes))) #make a line by line summary of the vibes"
+"0","sentiment_of_script_by_line$cum_vibes <- cumsum(sentiment_of_script_by_line$vibes)#cumulative vibes by line"

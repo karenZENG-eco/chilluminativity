@@ -7,6 +7,8 @@ I'll be loosely following the tutorial linked below.
 (https://www.tidytextmining.com/tidytext.html#tidyausten)
 Hopefully this helps me learn, because it sure ain't gonna be useful elsewhere...
 
+#plz use install.packages() to install packages if an error pops up saying you don't have it in your library
+
 ```{r}
 library(tidyverse)
 library(ggplot2)
@@ -17,14 +19,17 @@ library(tidytext)
 
 Before analysis, we have to change the format into tidy text to follow the tutorial.
 
-Load in raw data sourced from Barry's tweeter (https://docs.google.com/document/d/13R9hPoEFmLJI8H9kPYt291hjHokIBFQ5ci9uaOmO4dY/edit)
+Load in raw data sourced from Harry's tweeter (https://docs.google.com/document/d/13R9hPoEFmLJI8H9kPYt291hjHokIBFQ5ci9uaOmO4dY/edit)
 And then change the format. Extra info based on the original text like the row number can also be included in this step.
+
 ```{r}
 script <- read_lines("./raw/Chilluminativity - Script Public.txt") #load in plaintext
-script <- data_frame(script) #change it to table format
+script <- tibble(script) #change it to tibble format
 script <- script %>% mutate(line_number = row_number()) #add row number
 script <- unnest_tokens(script, word, script) #change to tidy format
 ```
+
+Script is a table of all the words in the script and the line that they are on
 
 We can count all the words easily and visualize it in a graph.
 ```{r}
@@ -40,10 +45,16 @@ script %>%
   coord_flip()
 ```
 
-Let's try some sentiment analysis. The bing dataset will tell you if a word has positive or negative vibes according to SCIENCE!
+As you can see from our analysis, the most common word is "the" followed by "to", "and" and "a". Pretty boring results tbh.
+
+Let's try some sentiment analysis now. Sentiment analysis is kinda supposed to tell us what E M O T I O N S are in the text, in case you are incapable of feeling them yourself *insert david molyneux joke here*. 
+
+The bing dataset will tell you if a word has positive or negative vibes according to SCIENCE!
 
 (citation for bing dataset is:
-Minqing Hu and Bing Liu. "Mining and Summarizing Customer Reviews." Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD-2004), Aug 22-25, 2004, Seattle, Washington, USA. See: http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon).
+Minqing Hu and Bing Liu. "Mining and Summarizing Customer Reviews." Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD-2004), Aug 22-25, 2004, Seattle, Washington, USA. 
+
+See: http://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon).
 
 ```{r}
 bing <- get_sentiments("bing") #use the bing dataset
@@ -52,7 +63,7 @@ sentiment_of_script <- script %>%
   inner_join(bing) #join the bing data to the script
 
 sentiment_of_script <- sentiment_of_script %>%
-  mutate(vibes = recode(sentiment, 
+  mutate(vibes = recode(sentiment, #vibes is whether a word is positive or negative in number format
                         "positive" = "1", #make sentiment a numeric value
                         "negative" = "-1")) #where 1 = positive, -1 = negative
 
@@ -72,12 +83,19 @@ ggplot(data = sentiment_of_script_by_line, aes(x = line_number, y = cum_vibes, g
   geom_line()
 ```
 
-That's nice, it looks like a very positive play, with a minor dip in mood at around line 300.
+That's nice, it looks like a very positive play, with a minor dip in mood a bit before line 300.
 
-Let's make more pretty graphics!
+So what is this dip?
 
-But first, save the graph we just made.
+```{r}
+script %>%
+  filter(line_number %in% (270:300))
+```
+Sounds like the end of scene 3 is a sad time :(
+
+Save the graph we just made.
 ```{r}
 ggsave("./output/vibes_by_line.jpg")
 ```
 
+Thanks and byeee~
