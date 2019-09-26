@@ -79,8 +79,12 @@ sentiment_of_script_by_line$cum_vibes <- cumsum(sentiment_of_script_by_line$vibe
 We can now graph the vibes throughout each line of the script
 
 ```{r}
-ggplot(data = sentiment_of_script_by_line, aes(x = line_number, y = cum_vibes, group = 1)) +
-  geom_line()
+ggplot(data = sentiment_of_script_by_line, aes(x = line_number, y = cum_vibes, group = 1)) + #make basic graph
+  geom_line() + #show data as line
+  ggtitle("Sentiment of the Chilluminati Nativety Play") + #add title
+  xlab("Line Number") + #title of x axis
+  ylab("Cumulative Mood (positive words = higher number)") #title of y axis
+
 ```
 
 That's nice, it looks like a very positive play, with a minor dip in mood a bit before line 300.
