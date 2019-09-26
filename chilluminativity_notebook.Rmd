@@ -37,7 +37,7 @@ count(script, word, sort = TRUE) #count the words
 
 script %>%
   count(word, sort = TRUE) %>%
-  filter(n > 42) %>%
+  filter(n > 40) %>% # only graph most common words
   mutate(word = reorder(word, n)) %>% #reorder so the most frequent words are at the top
   ggplot(aes(word, n)) + #graph the counted words
   geom_col() +
@@ -46,6 +46,12 @@ script %>%
 ```
 
 As you can see from our analysis, the most common word is "the" followed by "to", "and" and "a". Pretty boring results tbh.
+
+Save this graph
+
+```{r}
+ggsave("./output/common_words.jpg")
+```
 
 Let's try some sentiment analysis now. Sentiment analysis is kinda supposed to tell us what E M O T I O N S are in the text, in case you are incapable of feeling them yourself *insert david molyneux joke here*. 
 
